@@ -1,19 +1,46 @@
 import { useState, useEffect } from 'react';
+import { useLocalStorageState } from '../utils';
 
-function Board() {
-  // We're getting something out of localStorage [expensive stuff]
-  // so let's use lazy initialization
-  const [squares, setSquares] = useState(
-    () => JSON.parse(localStorage.getItem('squares')) || Array(9).fill(null),
+function Board({ onClick, squares }) {
+  function renderSquare(i) {
+    return (
+      <button className='square' onClick={() => onClick(i)}>
+        {squares[i]}
+      </button>
+    );
+  }
+
+  return (
+    <div>
+      <div className='board-row'>
+        {renderSquare(0)}
+        {renderSquare(1)}
+        {renderSquare(2)}
+      </div>
+      <div className='board-row'>
+        {renderSquare(3)}
+        {renderSquare(4)}
+        {renderSquare(5)}
+      </div>
+      <div className='board-row'>
+        {renderSquare(6)}
+        {renderSquare(7)}
+        {renderSquare(8)}
+      </div>
+    </div>
+  );
+}
+
+function Game() {
+  //
+  const [squares, setSquares] = useLocalStorageState(
+    'squares',
+    Array(9).fill(null),
   );
 
   const nextValue = calculateNextValue(squares);
   const winner = calculateWinner(squares);
   const status = calculateStatus(winner, squares, nextValue);
-
-  useEffect(() => {
-    localStorage.setItem('squares', JSON.stringify(squares));
-  }, [squares]);
 
   function selectSquare(squareIndex) {
     // prevent players to fill the squares if
@@ -33,48 +60,23 @@ function Board() {
     setSquares(Array(9).fill(null));
   }
 
-  function renderSquare(i) {
-    return (
-      <button className='square' onClick={() => selectSquare(i)}>
-        {squares[i]}
-      </button>
-    );
-  }
-
-  return (
-    <div>
-      <div className='status'> {status}</div>
-      <div className='board-row'>
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className='board-row'>
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className='board-row'>
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
-      <button className='restart' onClick={restart}>
-        restart
-      </button>
-    </div>
-  );
-}
-
-function Game() {
   return (
     <div className='game'>
       <div className='game-board'>
-        <Board />
+        <Board onClick={selectSquare} squares={squares} />
+        <button className='restart' onClick={restart}>
+          restart
+        </button>
+      </div>
+      <div className='game-info'>
+        <div>{status}</div>
+        {/* <ol>{moves}</ol> */}
       </div>
     </div>
   );
 }
+
+///////////////////////////////////////////////////////////
 
 // eslint-disable-next-line no-unused-vars
 function calculateStatus(winner, squares, nextValue) {

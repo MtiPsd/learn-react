@@ -1,6 +1,11 @@
 import * as React from 'react';
 
-// fully flexible custom hook example :
+/**
+ *
+ * @param {String} key The key to set in localStorage for this value
+ * @param {Object} defaultValue The value to use if it is not already in localStorage
+ * @param {{serialize: Function, deserialize: Function}} options The serialize and deserialize functions to use (defaults to JSON.stringify and JSON.parse respectively)
+ */
 
 function useLocalStorageState(
   key,
@@ -10,14 +15,14 @@ function useLocalStorageState(
   { serialize = JSON.stringify, deserialize = JSON.parse } = {},
 ) {
   const [state, setState] = React.useState(() => {
-    const valueInLocalStorage = localStorage.getItem(key);
+    const valueInLocalStorage = window.localStorage.getItem(key);
     if (valueInLocalStorage) {
       // the try/catch is here in case the localStorage value was set before
       // we had the serialization in place (like we do in previous extra credits)
       try {
         return deserialize(valueInLocalStorage);
       } catch (error) {
-        localStorage.removeItem(key);
+        window.localStorage.removeItem(key);
       }
     }
     return typeof defaultValue === 'function' ? defaultValue() : defaultValue;
@@ -37,23 +42,5 @@ function useLocalStorageState(
 
   return [state, setState];
 }
-/////////////////////////////
-function CustomHook({ initialName = '' }) {
-  const [name, setName] = useLocalStorageState('name', initialName);
 
-  function handleChange(event) {
-    setName(event.target.value);
-  }
-
-  return (
-    <div>
-      <form>
-        <label htmlFor='name'>Name: </label>
-        <input value={name} onChange={handleChange} id='name' />
-      </form>
-      {name ? <strong>Hello {name}</strong> : 'Please type your name'}
-    </div>
-  );
-}
 export { useLocalStorageState };
-export default CustomHook;

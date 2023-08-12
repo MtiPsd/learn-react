@@ -1,12 +1,19 @@
-import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 function Board() {
-  //
-  const [squares, setSquares] = React.useState(Array(9).fill(null));
+  // We're getting something out of localStorage [expensive stuff]
+  // so let's use lazy initialization
+  const [squares, setSquares] = useState(
+    () => JSON.parse(localStorage.getItem('squares')) || Array(9).fill(null),
+  );
 
   const nextValue = calculateNextValue(squares);
   const winner = calculateWinner(squares);
   const status = calculateStatus(winner, squares, nextValue);
+
+  useEffect(() => {
+    localStorage.setItem('squares', JSON.stringify(squares));
+  }, [squares]);
 
   function selectSquare(squareIndex) {
     // prevent players to fill the squares if

@@ -56,7 +56,6 @@ function Game() {
 
     const newHistory = history.slice(0, currentStep + 1);
     const squares = [...currentSquares];
-    console.log(squares);
 
     squares[square] = nextPlayer; // X or O
     // why setting the history before currenStep ?

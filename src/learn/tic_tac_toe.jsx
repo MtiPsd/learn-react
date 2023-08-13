@@ -1,7 +1,11 @@
-import { useState, useEffect } from 'react';
+// useState: tic tac toe
+// 💯 add game history feature
+// http://localhost:3000/isolated/final/04.extra-3.js
+
+import * as React from 'react';
 import { useLocalStorageState } from '../utils';
 
-function Board({ onClick, squares }) {
+function Board({ squares, onClick }) {
   function renderSquare(i) {
     return (
       <button className='square' onClick={() => onClick(i)}>
@@ -32,67 +36,80 @@ function Board({ onClick, squares }) {
 }
 
 function Game() {
-  //
-  const [squares, setSquares] = useLocalStorageState(
-    'squares',
+  const [history, setHistory] = useLocalStorageState('tic-tac-toe:history', [
     Array(9).fill(null),
+  ]);
+  const [currentStep, setCurrentStep] = useLocalStorageState(
+    'tic-tac-toe:step',
+    0,
   );
 
-  const nextValue = calculateNextValue(squares);
-  const winner = calculateWinner(squares);
-  const status = calculateStatus(winner, squares, nextValue);
+  const currentSquares = history[currentStep];
+  const winner = calculateWinner(currentSquares);
+  const nextPlayer = calculateNextPlayer(currentSquares);
+  const status = calculateStatus(winner, currentSquares, nextPlayer);
 
-  function selectSquare(squareIndex) {
-    // prevent players to fill the squares if
-    // game is over or if player clicks on the
-    // filled square
-    if (winner || squares[squareIndex]) {
+  function selectSquare(square) {
+    if (winner || currentSquares[square]) {
       return;
     }
-    // Let's make sure that we aren't mutating the values
-    // that managed by React, So we create a copy of it
-    const squaresCopy = [...squares];
-    squaresCopy[squareIndex] = nextValue;
-    setSquares(squaresCopy);
+
+    const newHistory = history.slice(0, currentStep + 1);
+    const squares = [...currentSquares];
+    console.log(squares);
+
+    squares[square] = nextPlayer; // X or O
+    // why setting the history before currenStep ?
+    // because currentStep depends on history.length
+    setHistory([...newHistory, squares]);
+    setCurrentStep(newHistory.length);
   }
 
   function restart() {
-    setSquares(Array(9).fill(null));
+    setHistory([Array(9).fill(null)]);
+    setCurrentStep(0);
   }
+
+  const moves = history.map((stepSquares, step) => {
+    const desc = step ? `Go to move #${step}` : 'Go to game start';
+    const isCurrentStep = step === currentStep;
+    return (
+      <li key={step}>
+        <button disabled={isCurrentStep} onClick={() => setCurrentStep(step)}>
+          {desc} {isCurrentStep ? '(current)' : null}
+        </button>
+      </li>
+    );
+  });
 
   return (
     <div className='game'>
       <div className='game-board'>
-        <Board onClick={selectSquare} squares={squares} />
+        <Board onClick={selectSquare} squares={currentSquares} />
         <button className='restart' onClick={restart}>
           restart
         </button>
       </div>
       <div className='game-info'>
         <div>{status}</div>
-        {/* <ol>{moves}</ol> */}
+        <ol>{moves}</ol>
       </div>
     </div>
   );
 }
 
-///////////////////////////////////////////////////////////
-
-// eslint-disable-next-line no-unused-vars
-function calculateStatus(winner, squares, nextValue) {
+function calculateStatus(winner, squares, nextPlayer) {
   return winner
     ? `Winner: ${winner}`
     : squares.every(Boolean)
     ? `Scratch: Cat's game`
-    : `Next player: ${nextValue}`;
+    : `Next player: ${nextPlayer}`;
 }
 
-// eslint-disable-next-line no-unused-vars
-function calculateNextValue(squares) {
+function calculateNextPlayer(squares) {
   return squares.filter(Boolean).length % 2 === 0 ? 'X' : 'O';
 }
 
-// eslint-disable-next-line no-unused-vars
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],

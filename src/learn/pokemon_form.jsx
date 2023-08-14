@@ -61,13 +61,14 @@ function fetchPokemon(name, delay = 1500) {
       }
     });
 }
-
+//////////////////////////
+//////////////////////////
 function PokemonInfoFallback({ name }) {
   const initialName = React.useRef(name).current;
   const fallbackPokemonData = {
     name: initialName,
     number: 'XXX',
-    image: '/img/pokemon/fallback-pokemon.jpg',
+    image: '/img/fallback-pokemon.jpg',
     attacks: {
       special: [
         { name: 'Loading Attack 1', type: 'Type', damage: 'XX' },
@@ -78,7 +79,9 @@ function PokemonInfoFallback({ name }) {
   };
   return <PokemonDataView pokemon={fallbackPokemonData} />;
 }
-
+//////////////////////////
+//////////////////////////
+//////////////////////////
 function PokemonDataView({ pokemon }) {
   return (
     <div>

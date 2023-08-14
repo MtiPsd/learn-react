@@ -17,12 +17,7 @@ class ErrorBoundary extends React.Component {
   render() {
     const { error } = this.state;
     if (error) {
-      return (
-        <div role='alert'>
-          There was an error:{' '}
-          <pre style={{ whiteSpace: 'normal' }}>{error.message} </pre>
-        </div>
-      );
+      return <this.props.FallbackComponent error={error} />;
     }
     return this.props.children;
   }
@@ -60,13 +55,22 @@ function PokemonInfo({ pokemonName }) {
   } else if (status === 'pending') {
     return <PokemonInfoFallback name={pokemonName} />;
   } else if (status === 'rejected') {
-    // this will be handled by Error
+    // this will be handled by ErrorBoundary
     throw error;
   } else if (status === 'resolved') {
-    return <PokemonDataView pokemon={null} />;
+    return <PokemonDataView pokemon={pokemon} />;
   }
 
   throw new Error('this should be impossible');
+}
+
+function ErrorFallBack({ error }) {
+  return (
+    <div role='alert'>
+      There was an error:{' '}
+      <pre style={{ whiteSpace: 'normal' }}>{error.message} </pre>
+    </div>
+  );
 }
 
 function Pokemon() {
@@ -81,7 +85,7 @@ function Pokemon() {
       <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
       <hr />
       <div className='pokemon-info'>
-        <ErrorBoundary>
+        <ErrorBoundary key={pokemonName} FallbackComponent={ErrorFallBack}>
           <PokemonInfo pokemonName={pokemonName} />
         </ErrorBoundary>
       </div>

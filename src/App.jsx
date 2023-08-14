@@ -4,14 +4,16 @@ import HookFlow from './learn/hook_flow';
 import LiftingState from './learn/lifting_state';
 import Game from './learn/tic_tac_toe';
 import Tilt from './learn/vanilla_tilt';
+import Pokemon from './learn/http_request';
 /////////////////////////////
 /////////////////////////////
 /////////////////////////////
 function App() {
   return (
-    <Tilt>
-      <div className='totally-centered'>vanilla-tilt.js</div>
-    </Tilt>
+    // <Tilt>
+    //   <div className='totally-centered'>vanilla-tilt.js</div>
+    // </Tilt>
+    <Pokemon />
   );
 }
 

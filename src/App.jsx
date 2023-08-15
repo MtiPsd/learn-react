@@ -16,5 +16,3 @@ function App() {
     <Pokemon />
   );
 }
-
-export default App;

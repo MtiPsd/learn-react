@@ -1,7 +1,3 @@
-// useState: tic tac toe
-// 💯 add game history feature
-// http://localhost:3000/isolated/final/04.extra-3.js
-
 import * as React from 'react';
 import { useLocalStorageState } from '../utils';
 
@@ -41,7 +37,7 @@ function Game() {
   ]);
   const [currentStep, setCurrentStep] = useLocalStorageState(
     'tic-tac-toe:step',
-    0,
+    0
   );
 
   const currentSquares = history[currentStep];

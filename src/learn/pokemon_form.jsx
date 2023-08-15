@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-const formatDate = date =>
+const formatDate = (date) =>
   `${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')} ${String(
-    date.getSeconds(),
+    date.getSeconds()
   ).padStart(2, '0')}.${String(date.getMilliseconds()).padStart(3, '0')}`;
 
 // the delay argument is for faking things out a bit
@@ -40,7 +40,7 @@ function fetchPokemon(name, delay = 1500) {
         variables: { name: name.toLowerCase() },
       }),
     })
-    .then(async response => {
+    .then(async (response) => {
       const { data } = await response.json();
       if (response.ok) {
         const pokemon = data?.pokemon;
@@ -49,13 +49,13 @@ function fetchPokemon(name, delay = 1500) {
           return pokemon;
         } else {
           return Promise.reject(
-            new Error(`No pokemon with the name "${name}"`),
+            new Error(`No pokemon with the name "${name}"`)
           );
         }
       } else {
         // handle the graphql errors
         const error = {
-          message: data?.errors?.map(e => e.message).join('\n'),
+          message: data?.errors?.map((e) => e.message).join('\n'),
         };
         return Promise.reject(error);
       }
@@ -96,7 +96,7 @@ function PokemonDataView({ pokemon }) {
       </section>
       <section>
         <ul>
-          {pokemon.attacks.special.map(attack => (
+          {pokemon.attacks.special.map((attack) => (
             <li key={attack.name}>
               <label>{attack.name}</label>:{' '}
               <span>

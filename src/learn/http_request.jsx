@@ -7,15 +7,14 @@ import {
   fetchPokemon,
 } from './pokemon_form';
 
-/////////////////////////////
-/////////////////////////////
-/////////////////////////////
 function PokemonInfo({ pokemonName }) {
   const [state, setState] = React.useState({
     status: pokemonName ? 'pending' : 'idle',
     pokemon: null,
     error: null,
   });
+
+  React.useState('initialState');
 
   const { status, pokemon, error } = state;
 
@@ -26,12 +25,12 @@ function PokemonInfo({ pokemonName }) {
     setState({ status: 'pending' });
 
     fetchPokemon(pokemonName).then(
-      pokemon => {
+      (pokemon) => {
         setState({ pokemon, status: 'resolved' });
       },
-      error => {
+      (error) => {
         setState({ error, status: 'rejected' });
-      },
+      }
     );
   }, [pokemonName]);
 

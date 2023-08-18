@@ -19,5 +19,3 @@ function App() {
     <AppWithUnmountCheckbox />
   );
 }
-
-export default App;
